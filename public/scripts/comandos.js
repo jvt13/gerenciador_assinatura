@@ -1,9 +1,8 @@
 var dataURLBase64;
+var dataURL_canvas;
 var imagemPosicao = { x: 0, y: 0 };
 var lastImagePosition = { x: 50, y: 50 };
 var eventFirstImage;
-
-const trataFile = require('../scripts/trata_file');
 
 function juntarIMGCanvas() {
     var canvas = document.getElementById('container_canvas');
@@ -64,6 +63,7 @@ function SecondImage2(dataURL) {
 }
 
 function SecondImage(dataURL) {
+    dataURL_canvas = dataURL;
     var canvas = document.getElementById('id_canvas');
     var ctx = canvas.getContext('2d');
 
@@ -88,8 +88,8 @@ function refreshCanvas(positionX, positionY) {
     const file = blobToFile(blob, "img_teste.jpg");
 
     // Atualiza a posição da imagem
-    imagemPosicao.x = positionX-40;
-    imagemPosicao.y = positionY-40;
+    imagemPosicao.x = positionX - 40;
+    imagemPosicao.y = positionY - 40;
 
     var img2 = new Image();
     img2.onload = function () {
@@ -99,6 +99,12 @@ function refreshCanvas(positionX, positionY) {
         // Desenha a imagem na nova posição
         setTimeout(function () {
             drawImageAtCurrentPosition(img2, ctx);
+            var dataURL = canvas.toDataURL();
+            let minhaString = (typeof dataURL === 'string') ? dataURL : JSON.stringify(dataURL);
+            let stringSemColchetes = minhaString.replace(/[\[\]]/g, '');
+            var dataURL = stringSemColchetes.replace(/"/g, '');
+            dataURL_canvas = dataURL;
+
         }, 500);
     };
 
@@ -114,13 +120,49 @@ function clearImageArea(img, ctx) {
     ctx.clearRect(lastImagePosition.x, lastImagePosition.y, 200, 200);
 }
 
-function downloadIMG() {
-    var hora = new Date();
+async function downloadIMG() {
+    try {
+        var blob = dataURLtoBlob(dataURL_canvas);
+        const file = blobToFile(blob, "img_teste.jpg");
+        const formData = new FormData();
+        formData.append('arquivo', file);
+
+        const response = await fetch('/tratamento', {
+            method: 'POST',
+            /*body: formData*/
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dados: dataURL_canvas })
+        });
+
+        const { success, menssagem, name_file, error } = await response.json();
+
+        if (success) {
+            console.log('Retorno: ' + menssagem);
+            console.log('DataURL: ' + name_file);
+            setTimeout(function () {
+                downloadFilePDF(name_file);
+            }, 1000);
+            
+            //return menssagem;
+        } else {
+            console.error(error);
+        }
+    } catch (error) {
+        console.error(error);
+
+    }
+    /*var hora = new Date();
     var canvas = document.getElementById('id_canvas');
     var downloadLink = document.createElement('a');
     downloadLink.href = canvas.toDataURL('image/png');
     downloadLink.download = 'imagem.png';
-    downloadLink.click();
+    downloadLink.click();*/
+}
+
+function downloadFilePDF(name_file) {
+    const encodedFileName = encodeURIComponent(name_file);
+    console.log('/download?filename=' + encodedFileName);
+    window.location.href = '/download?filename=' + encodedFileName;
 }
 
 
@@ -355,3 +397,21 @@ function blobToFile(blob, fileName) {
     const file = new File([blob], fileName, { type: blob.type });
     return file;
 }
+
+function obterFormatoDaImagem(dataURL) {
+    // Extrair a parte do cabeçalho do data URL que contém informações sobre o formato da imagem
+    const cabecalho = dataURL.split(',')[0];
+
+    // O cabeçalho geralmente tem o formato "data:image/png;base64" ou similar
+    const correspondencia = cabecalho.match(/:(.*?);/);
+
+    if (correspondencia && correspondencia[1]) {
+        // O segundo grupo de captura (correspondencia[1]) contém a extensão do formato da imagem
+        return correspondencia[1].toLowerCase();
+    } else {
+        console.error('Formato da imagem não encontrado no data URL.');
+        return null;
+    }
+}
+
+module.exports = { obterFormatoDaImagem, dataURLtoBlob, blobToFile }
