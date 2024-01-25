@@ -45,18 +45,19 @@
         #canvas-container {
             border: 1px solid #ddd;
             margin-top: 20px;
-            width: 210mm;
-            /* Largura padrão A4 */
-            height: 297mm;
-            /* Altura padrão A4 */
+            width: 100%;
+            /* Alterado para porcentagem */
+            height: 0;
+            padding-bottom: 141.42%;
+            /* Proporção A4 (210mm x 297mm) */
             max-width: 100%;
-            /* Garante que não ultrapasse a largura da tela */
+            overflow: hidden;
+            position: relative;
         }
 
         .painel {
             margin: 0 auto;
             position: relative;
-
             margin-top: 20px;
             padding: 20px;
             background-color: #f9f9f9;
@@ -64,14 +65,12 @@
             border-radius: 5px;
         }
 
-
-
         .painel img {
             position: absolute;
             top: 0;
             left: 0;
-            width: 50%;
-            height: 50%;
+            /*width: 50%;
+            height: 50%;*/
             cursor: move;
         }
 
@@ -114,9 +113,9 @@
             <div class="painel" id="painel">
                 <div id="canvas-container">
                     <canvas id="container_canvas">
-                        <div id="canvas_assinatura">
+                        <!--<div id="canvas_assinatura">
                             <img id="img_assinatura" src="" />
-                        </div>
+                        </div>-->
                     </canvas>
                 </div>
             </div>
@@ -124,9 +123,9 @@
             <div class="painel" id="painel">
                 <div id="canvas-container">
                     <canvas id="id_canvas">
-                        <div id="canvas_assinatura">
+                        <!--<div id="canvas_assinatura">
                             <img id="img_assinatura" src="" />
-                        </div>
+                        </div>-->
                     </canvas>
                 </div>
             </div>
@@ -156,7 +155,7 @@
         downloadIMG();
         //downloadImageAsPDF();
         //downloadFilePDF();
-        
+
     });
 
     function downloadImageAsPDF() {

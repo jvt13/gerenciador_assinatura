@@ -88,8 +88,8 @@ function refreshCanvas(positionX, positionY) {
     const file = blobToFile(blob, "img_teste.jpg");
 
     // Atualiza a posição da imagem
-    imagemPosicao.x = positionX - 40;
-    imagemPosicao.y = positionY - 40;
+    imagemPosicao.x = positionX;
+    imagemPosicao.y = positionY;
 
     var img2 = new Image();
     img2.onload = function () {
@@ -112,7 +112,7 @@ function refreshCanvas(positionX, positionY) {
 }
 // Função para desenhar a imagem na posição atual
 function drawImageAtCurrentPosition(img, ctx) {
-    ctx.drawImage(img, imagemPosicao.x, imagemPosicao.y, 150, 100);
+    ctx.drawImage(img, imagemPosicao.x, imagemPosicao.y, 120, 120);
 }
 
 // Função para limpar a área ocupada pela imagem anterior
@@ -215,8 +215,8 @@ function loadImageFromDataURLASS(dataURL) {
     img.style.border = '1px solid black';
     /*img.style.width = '20%';
     img.style.height = '10%';*/
-    img.style.width = '100px';
-    img.style.height = '100px'
+    img.style.width = '120px';
+    img.style.height = '120px'
 
     //juntarIMGCanvas();
     SecondImage(dataURLBase64);
