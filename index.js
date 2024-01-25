@@ -8,7 +8,7 @@ const fs = require('fs');
 const multer = require('multer');
 
 // Configuração do multer para lidar com uploads
-const upload = multer({ dest: 'uploads/' });
+//const upload = multer({ dest: 'uploads/' });
 
 const conversor = require('./public/scripts/converterPDF');
 const comandos = require('./public/scripts/comandos');
@@ -16,7 +16,7 @@ const preparaConvert = require('./public/scripts/conversor/main')
 
 
 const app = express();
-var porta = process.env.PORT || 3000;
+var porta = process.env.PORT || 5000;
 
 /* Definição de limite de dados de upload.*/
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -46,9 +46,9 @@ app.get('/', async (req, res) => {
 app.get('/download', (req, res) => {
     const name_file = decodeURIComponent(req.query.filename);
     console.log('Nome do Arquivo: ' + name_file);
-    
+
     //const patch_arquivo = path.join(__dirname, 'public', 'uploads', name_file);
-    const patch_arquivo = './public/uploads/'+ name_file;
+    const patch_arquivo = './public/uploads/' + name_file;
     console.log('Arquivo: ' + patch_arquivo)
     res.download(patch_arquivo, (erro) => {
         if (erro) {
@@ -60,10 +60,10 @@ app.get('/download', (req, res) => {
     });
 });
 
-app.post('/tratamento', upload.single('arquivo'), async (req, res) => {
+app.post('/tratamento', /*upload.single('arquivo'),*/ async (req, res) => {
     try {
         const dta = new Date();
-        const name_file ='assinatura.pdf';
+        const name_file = 'assinatura.pdf';
         const name_diretorio = dta.getTime();
         const rec = req.body;
         const pdfPath = 'dataURL.txt';
@@ -80,36 +80,6 @@ app.post('/tratamento', upload.single('arquivo'), async (req, res) => {
             console.error(error)
             res.status(500).json({ success: false, error: 'Parâmetros inválidos' });
         }
-        /*const pdfPath = 'img_teste.jpg';
-        const arquivo = pastaRaiz + "\\" + pdfPath;
-        var fileData = req.file;
-        console.log("File: "+ req.file.originalname);*/
-
-        /* try {
- 
-             fs.renameSync(req.file.path, arquivo);
- 
-             console.log('Pasta Raiz: '+ pastaRaiz);
-             console.log('Arquivo: '+ arquivo);
-             await conversor.conectar(pastaRaiz);
-             await conversor.upload(arquivo);
-             await conversor.converter();
-             await conversor.download();
-     
-             res.status(200).json({ success: true, menssagem: 'Conversão e download realizado.' });
-         } catch (error) {
-             
-         }*/
-
-        /*let minhaString = (typeof dataURL === 'string') ? dataURL : JSON.stringify(dataURL);
-        let stringSemColchetes = minhaString.replace(/[\[\]]/g, '');
-        dataURL = stringSemColchetes.replace(/"/g, '');*/
-
-        /*var blob = comandos.dataURLtoBlob(req.body.dados);
-        const file = comandos.blobToFile(blob, "img_teste.jpg");
-        console.log(file.name)*/
-
-        //res.json({ success: true, data: await list2 });
 
     } catch (error) {
         console.error(error)
