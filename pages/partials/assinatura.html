@@ -79,11 +79,11 @@
         border: 1px solid aqua;
     }
 
-    .modal .modal-content .container-assinatura canvas {
+    .modal .modal-content .container-assinatura canvas_ass {
         border: 1px solid black;
     }
 
-    .modal .container-canvas {
+    .modal .container-canvas_ass {
         position: relative;
         left: 100px;
         border: 1px solid blue;
@@ -159,7 +159,7 @@
             <h1>ASSINATURA</h1>
         </div>
         <br>
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas_ass"></canvas>
         <input type="text" id="dados-assinatura" class="dados-assinatura" style="display: none;" /><br><br>
         <div class="modal-footer">
             <button id="save" class="btn-save">SALVAR</button>
@@ -172,7 +172,7 @@
 </body>
 
 <script>
-    var canvas = document.getElementById("canvas");
+    var canvas_ass = document.getElementById("canvas_ass");
     var saveButton = document.getElementById('save');
     var clearButton = document.getElementById('clear');
 
@@ -180,7 +180,7 @@
         if (!Drawing) {
             alert("Faça sua assinatura.");
         } else {
-            var dataURL = canvas.toDataURL();
+            var dataURL = canvas_ass.toDataURL();
             recData = [dataURL];
             document.getElementById('dados-assinatura').value = [dataURL];
 
@@ -192,84 +192,30 @@
         }
     });
 
-    /*saveButton.addEventListener("click", function (event) {
-        if (!Drawing) {
-            alert("Faça sua assinatura.");
-        } else {
-            // Encontre os limites do desenho no canvas
-            var ctx = canvas.getContext("2d");
-            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            var minX = canvas.width;
-            var minY = canvas.height;
-            var maxX = 0;
-            var maxY = 0;
-
-            for (var y = 0; y < canvas.height; y++) {
-                for (var x = 0; x < canvas.width; x++) {
-                    var pixelIndex = (y * canvas.width + x) * 4;
-                    if (imageData[pixelIndex + 3] > 0) { // Check alpha value (transparency)
-                        minX = Math.min(minX, x);
-                        minY = Math.min(minY, y);
-                        maxX = Math.max(maxX, x);
-                        maxY = Math.max(maxY, y);
-                    }
-                }
-            }
-
-            // Calcule a largura e altura do desenho
-            var width = maxX - minX + 1;
-            var height = maxY - minY + 1;
-
-            // Crie um novo canvas com as dimensões do desenho
-            var newCanvas = document.createElement("canvas");
-            newCanvas.width = width;
-            newCanvas.height = height;
-            var newCtx = newCanvas.getContext("2d");
-
-            // Desenhe a assinatura no novo canvas usando os limites encontrados
-            newCtx.drawImage(canvas, minX, minY, width, height, 0, 0, width, height);
-
-            // Converta o novo canvas para um dataURL
-            var newDataURL = newCanvas.toDataURL();
-
-            // Faça o que precisa ser feito com o newDataURL
-            recData = [newDataURL];
-            document.getElementById('dados-assinatura').value = newDataURL;
-            closeModal('modal-ass', 'container-home');
-            loadImageFromDataURL(newDataURL);
-            clear();
-        }
-    });
-
-    clearButton.addEventListener('click', function (event) {
-        clear();
-        Drawing = false;
-    });*/
-
     function clear() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas_ass.width, canvas_ass.height);
         document.getElementById('dados-assinatura').value = "";
     }
 
-    function canvasVazio() {
-        // Obtém o contexto do canvas
-        ctx = canvas.getContext("2d");
+    function canvas_assVazio() {
+        // Obtém o contexto do canvas_ass
+        ctx = canvas_ass.getContext("2d");
 
-        // Obtém os dados-assinatura de pixel do canvas
-        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // Obtém os dados-assinatura de pixel do canvas_ass
+        var imageData = ctx.getImageData(0, 0, canvas_ass.width, canvas_ass.height);
         var data = imageData.data;
         alert("REc:" + data.length);
 
-        // Percorre todos os pixels do canvas e verifica se eles são brancos
+        // Percorre todos os pixels do canvas_ass e verifica se eles são brancos
         for (var i = 0; i < data.length; i += 4) {
             console.log(data[i + 2])
             if (data[i] !== 255 || data[i + 1] !== 255 || data[i + 2] !== 255) {
-                // Se um pixel não for branco, o canvas não está vazio
+                // Se um pixel não for branco, o canvas_ass não está vazio
                 return false;
             }
         }
 
-        // Se todos os pixels forem brancos, o canvas está vazio
+        // Se todos os pixels forem brancos, o canvas_ass está vazio
         return true;
     }
 
@@ -301,9 +247,9 @@
     }
 </script>
 
-<script>//Script do canvas para poder desenhar na tela.
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
+<script>//Script do canvas_ass para poder desenhar na tela.
+    var canvas_ass = document.getElementById("canvas_ass");
+    var ctx = canvas_ass.getContext("2d");
 
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
@@ -324,34 +270,34 @@
         Drawing = true;
     }
 
-    canvas.addEventListener("mousedown", (e) => {
+    canvas_ass.addEventListener("mousedown", (e) => {
         isDrawing = true;
         [lastX, lastY] = [e.offsetX, e.offsetY];
     });
 
-    canvas.addEventListener("mousemove", draw);
+    canvas_ass.addEventListener("mousemove", draw);
 
-    canvas.addEventListener("mouseup", () => {
+    canvas_ass.addEventListener("mouseup", () => {
         isDrawing = false;
     });
 
-    canvas.addEventListener("mouseout", () => {
+    canvas_ass.addEventListener("mouseout", () => {
         isDrawing = false;
     });
 
-    canvas.addEventListener('touchstart', (e) => {
+    canvas_ass.addEventListener('touchstart', (e) => {
         isDrawing = true;
-        lastX = e.touches[0].clientX - canvas.offsetLeft;
-        lastY = e.touches[0].clientY - canvas.offsetTop;
+        lastX = e.touches[0].clientX - canvas_ass.offsetLeft;
+        lastY = e.touches[0].clientY - canvas_ass.offsetTop;
         //alert("Fim")
     });
 
 
-    canvas.addEventListener('touchmove', (e) => {
+    canvas_ass.addEventListener('touchmove', (e) => {
         //alert("Touc")
         if (isDrawing) {
-            const currentX = e.touches[0].clientX - canvas.offsetLeft;
-            const currentY = e.touches[0].clientY - canvas.offsetTop;
+            const currentX = e.touches[0].clientX - canvas_ass.offsetLeft;
+            const currentY = e.touches[0].clientY - canvas_ass.offsetTop;
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(currentX, currentY);
@@ -375,7 +321,7 @@
         }
     });
 
-    canvas.addEventListener('touchend', () => {
+    canvas_ass.addEventListener('touchend', () => {
         isDrawing = false;
     });
 
@@ -390,16 +336,16 @@
                 modal_header.style.marginTop = '0';
                 var rec = (window.innerHeight * 5) / 100;
                 var calc = (window.innerHeight * 5) / 100;
-                canvas.style.left = calc + "px";
-                canvas.width = window.innerHeight - (calc / 2);
+                canvas_ass.style.left = calc + "px";
+                canvas_ass.width = window.innerHeight - (calc / 2);
                 var calc = (window.screen.width * 38) / 100;
-                canvas.height = window.screen.width - (calc * 2);
+                canvas_ass.height = window.screen.width - (calc * 2);
             } else if (window.orientation === 0) {//modo retrato
                 modal_header.style.marginTop = '30%';
                 var calc = (window.screen.width * 5) / 100;
-                canvas.style.left = calc + "px";
-                canvas.width = window.screen.width - (calc * 2);
-                canvas.height = 150;
+                canvas_ass.style.left = calc + "px";
+                canvas_ass.width = window.screen.width - (calc * 2);
+                canvas_ass.height = 150;
             }
         }
     });
@@ -407,18 +353,18 @@
     window.onload = function () {
         if (isMobile) {//Verifica se é dispositivo celular ou tablet.
             var calc = (window.screen.width * 5) / 100;
-            canvas.style.left = calc + "px";
-            canvas.width = window.screen.width - (calc * 2);
+            canvas_ass.style.left = calc + "px";
+            canvas_ass.width = window.screen.width - (calc * 2);
 
             if (window.orientation === undefined) {
 
             } else if (Math.abs(window.orientation) === 90) {//modo paisagem
                 modal_header.style.marginTop = '0';
                 var calc = (window.screen.width * 5) / 100;
-                canvas.style.left = calc + "px";
-                canvas.width = window.screen.width - (calc * 2) - 50;
+                canvas_ass.style.left = calc + "px";
+                canvas_ass.width = window.screen.width - (calc * 2) - 50;
                 var calc = (window.screen.width * 38) / 100;
-                canvas.height = window.screen.width - (calc * 2);
+                canvas_ass.height = window.screen.width - (calc * 2);
             } else if (window.orientation === 0) {//modo retrato
                 //alert("Para facilidar na assinatura, ative a rotação da tela e vire o dispositivo na horizontal.")
                 modal_header.style.marginTop = '30%';
@@ -426,8 +372,8 @@
         } else {
             modal_header.style.marginTop = '0';
             var calc = (window.screen.width * 5) / 100;
-            canvas.style.left = calc + "px";
-            canvas.width = window.screen.width;
+            canvas_ass.style.left = calc + "px";
+            canvas_ass.width = window.screen.width;
 
         }
     }
@@ -437,17 +383,17 @@
 
     if (mediaQuery.matches) {
         //alert("fdsfs")
-        //canvas.width = window.screen.width - 100;
-        //canvas.height = 150;
+        //canvas_ass.width = window.screen.width - 100;
+        //canvas_ass.height = 150;
     }
 
     mediaQuery = window.matchMedia("(max-width: 3000px)");
 
     if (mediaQuery.matches) {
         //alert("fdsfs")
-        canvas.width = window.screen.width - 100;
-        /*canvas.width = 600;
-        canvas.height = 150;*/
+        canvas_ass.width = window.screen.width - 100;
+        /*canvas_ass.width = 600;
+        canvas_ass.height = 150;*/
     }
 </script>
 

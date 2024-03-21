@@ -107,15 +107,17 @@
         <div id="container-home">
             <!--<input type="file" id="inputPDF" onchange="loadPDF(event)" accept="application/pdf" />-->
             <!--<input type="file" id="inputPDF" onchange="converterPDF()" accept="application/pdf" />-->
-            <input type="file" id="inputImage" onchange="loadImage(event)" accept="image/*" />
+            <input type="file" id="inputImage" onchange="loadFile(event)" accept=".pdf, image/*" />
+            <button id="btn_pag_anterior">Anterior</button>
+            <label id="lb_page_cur">0</label> de
+            <label id="lb_page_final">0</label>
+            <button id="btn_pag_proximo">Próximo</button>
+
             <button id="btn_chama_ass">Assinatura</button>
             <button id="btn_download">Download</button>
             <div class="painel" id="painel">
                 <div id="canvas-container">
                     <canvas id="container_canvas">
-                        <!--<div id="canvas_assinatura">
-                            <img id="img_assinatura" src="" />
-                        </div>-->
                     </canvas>
                 </div>
             </div>
@@ -123,24 +125,26 @@
             <div class="painel" id="painel">
                 <div id="canvas-container">
                     <canvas id="id_canvas">
-                        <!--<div id="canvas_assinatura">
-                            <img id="img_assinatura" src="" />
-                        </div>-->
                     </canvas>
                 </div>
             </div>
         </div>
 
         <!--<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-
-        <script src="../public/scripts/comandos.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+        <script src="../public/scripts/comandos2.js"></script>
+        <script src="../public/scripts/download.js"></script>
 </body>
 
 <script>
     var main = document.getElementById('container-home');
     var btn_assinatura = document.getElementById('btn_chama_ass')
+    var btn_pag_anterior = document.getElementById('btn_pag_anterior')
+    var btn_pag_proximo = document.getElementById('btn_pag_proximo')
+    /*const container = document.getElementById('canvas-container');
+    var canvas = document.getElementById('container_canvas');*/
+    var lb_page_cur = document.getElementById('lb_page_cur');
+    var lb_page_final = document.getElementById('lb_page_final');
 
     btn_assinatura.addEventListener('click', function (event) {
         var modal = document.getElementById('modal-ass');
@@ -153,27 +157,25 @@
     btn_download.addEventListener('click', async function () {
         //juntarIMGCanvas();
         downloadIMG();
+        //juntarPDF();
         //downloadImageAsPDF();
         //downloadFilePDF();
 
     });
 
-    function downloadImageAsPDF() {
-        // Criar um novo documento PDF
-        var pdf = new jsPDF.default();
+    btn_pag_anterior.addEventListener('click', function () {
+        if (pageNum > 1) {
+            pageNum--;
+            refleshPage();
+        }
+    })
 
-        // Obter a imagem do canvas
-        var canvas = document.getElementById('id_canvas'); // Substitua 'seuCanvas' pelo ID do seu canvas
-        var imgData = canvas.toDataURL('image/png');
-
-        // Adicionar a imagem ao PDF
-        pdf.addImage(imgData, 'PNG', 10, 10, 190, 100); // Ajuste as coordenadas e o tamanho conforme necessário
-
-        // Baixar o PDF
-        pdf.save('imagem.pdf');
-    }
-
-
+    btn_pag_proximo.addEventListener('click', function () {
+        if (pageNum > 0 && pageNum <= lb_page_final.textContent) {
+            pageNum++;
+            refleshPage();
+        }
+    });
 
 </script>
 

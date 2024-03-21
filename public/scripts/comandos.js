@@ -3,22 +3,144 @@ var dataURL_canvas;
 var imagemPosicao = { x: 0, y: 0 };
 var lastImagePosition = { x: 50, y: 50 };
 var eventFirstImage;
+var pageNum = 1;
+var pdfDoc = null;
+var container = null;
+var canvas = null;
+let hashMap = {};
 
-function juntarIMGCanvas() {
-    var canvas = document.getElementById('container_canvas');
-    var ctx = canvas.getContext('2d');
+// Função para converter ArrayBuffer para string base64
+function arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
 
-    // Converta o Data URL para um Blob
-    var blob = dataURLtoBlob(dataURLBase64);
-    const file = blobToFile(blob, "img_teste.jpg");
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
 
-    var img2 = new Image();
-    img2.onload = function () {
-        ctx.drawImage(img2, 50, 50, 200, 200);
-    };
+    var prefix = 'data:image/png;base64,';
+    return prefix + btoa(binary);
+}
 
-    img2.src = URL.createObjectURL(file);
+async function tratarURLPage() {
+    const pdfInput = document.getElementById('inputImage');
+    const file = pdfInput.files[0];
 
+    if (file) {
+        const fileReader = new FileReader();
+
+        fileReader.onload = async function (e) {
+            const arrayBuffer = e.target.result;
+            const pdfData = new Uint8Array(arrayBuffer);
+
+            const pdfDocument = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+            for (let pageNumber = 1; pageNumber <= pdfDocument.numPages; pageNumber++) {
+                const pdfPage = await pdfDocument.getPage(pageNumber);
+                const viewport = pdfPage.getViewport({ scale: 1.0 });
+
+                const canvas = document.createElement('canvas');
+                //var canvas = document.getElementById('id_canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+
+                await pdfPage.render(renderContext).promise;
+
+                //if (pageNumber === 1) {
+                    const dataURL = canvas.toDataURL('image/jpeg');
+                    //console.log(`DataURL da página ${pageNumber}:`, dataURL);
+                    hashMap[pageNumber] = dataURL;
+                    SecondImage(dataURL)
+                //}
+            }
+
+        };
+
+        fileReader.readAsArrayBuffer(file);
+    }
+}
+
+function loadFile(event) {
+    var inputFile = event.target;
+    var file = inputFile.files[0];
+    container = document.getElementById('canvas-container');
+    canvas = document.getElementById('container_canvas');
+
+    if (file.type === 'application/pdf') {
+        loadPDF(file);
+        tratarURLPage();
+    }
+    if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        loadImage(event);
+    }
+}
+
+function loadPDF(file) {
+    //tratarURLPage();
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        //var pdfData = event.target.result;
+        var arrayBuffer = event.target.result;
+        var base64String = arrayBufferToBase64(arrayBuffer);
+        const pdfData = new Uint8Array(this.result);
+
+        pdfjsLib.getDocument({ data: pdfData }).promise.then(function (pdf) {
+            pdfDoc = pdf;
+            lb_page_cur.innerHTML = 1;
+            lb_page_final.innerHTML = pdfDoc.numPages;
+            renderPagePDF(pageNum);
+        });
+
+    }
+    reader.readAsArrayBuffer(file);
+}
+
+function renderPagePDF(pageNum) {
+    // Renderiza a primeira página do PDF
+    pdfDoc.getPage(pageNum).then(function (page) {
+        var containerRect = container.getBoundingClientRect();
+        var viewport = page.getViewport({ scale: 1.0 });
+
+        // Calcula o scale para ajustar às dimensões do contêiner
+        var scale = Math.min(containerRect.width / viewport.width, containerRect.height / viewport.height);
+
+        viewport = page.getViewport({ scale: scale });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        container.innerHTML = '';
+        container.appendChild(canvas);
+
+        var context = canvas.getContext('2d');
+        var renderContext = {
+            canvasContext: context,
+            viewport: viewport
+        };
+
+        page.render(renderContext);
+    });
+}
+
+function refleshPage() {
+    //const container = document.getElementById('canvas-container');
+    console.log('Pagina: ' + pageNum + " de " + pdfDoc.numPages);
+    //console.log(hashMap[pageNum]);
+    if (pageNum > pdfDoc.numPages) {
+        pageNum--;
+        return;
+    }
+    //pageNum++;
+    lb_page_cur.innerHTML = pageNum;
+    container.innerHTML = '';
+    renderPagePDF(pageNum);
 }
 
 function firstImage(event) {
@@ -42,24 +164,9 @@ function firstImage(event) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
 
-    //console.log('Imagem: ' + input.files[0])
+    console.log('Imagem: ' + input.files[0])
     img.src = URL.createObjectURL(input.files[0]);
 
-}
-function SecondImage2(dataURL) {
-    var canvas = document.getElementById('id_canvas');
-    var ctx = canvas.getContext('2d');
-
-    // Converta o Data URL para um Blob
-    var blob = dataURLtoBlob(dataURL);
-    const file = blobToFile(blob, "img_teste.jpg");
-
-    var img2 = new Image();
-    img2.onload = function () {
-        ctx.drawImage(img2, 50, 50, 200, 200);
-    };
-
-    img2.src = URL.createObjectURL(file);
 }
 
 function SecondImage(dataURL) {
@@ -142,7 +249,7 @@ async function downloadIMG() {
             setTimeout(function () {
                 downloadFilePDF(name_file);
             }, 1000);
-            
+
             //return menssagem;
         } else {
             console.error(error);
@@ -151,12 +258,6 @@ async function downloadIMG() {
         console.error(error);
 
     }
-    /*var hora = new Date();
-    var canvas = document.getElementById('id_canvas');
-    var downloadLink = document.createElement('a');
-    downloadLink.href = canvas.toDataURL('image/png');
-    downloadLink.download = 'imagem.png';
-    downloadLink.click();*/
 }
 
 function downloadFilePDF(name_file) {
@@ -219,7 +320,7 @@ function loadImageFromDataURLASS(dataURL) {
     img.style.height = '120px'
 
     //juntarIMGCanvas();
-    SecondImage(dataURLBase64);
+    //SecondImage(dataURLBase64);
 
     //Adcionar img ao Container
     //imgContainer.appendChild(img);

@@ -1,5 +1,6 @@
 const imgToPDF = require('./app');
 const fs = require('fs');
+const { jsPDF } = require('jspdf');
 //const path = require('path');
 
 //app.set('views', path.join(__dirname, '/pages'));
@@ -31,7 +32,7 @@ function preparaFiles() {
 
 async function converterPDF_IMG(dataURL, name_diretorio, name_file) {
     const arquivo = name_file;
-    
+
     const pages = [ // path to the image
         dataURL // base64
     ]
@@ -63,4 +64,30 @@ async function converterPDF_IMG(dataURL, name_diretorio, name_file) {
         .pipe(fs.createWriteStream(arquivo))*/
 }
 
-module.exports = { preparaFiles, converterPDF_IMG }
+
+/* Juntar IMG para PDF */
+
+// Função para converter dataURL em imagem
+function dataURLToImage(dataURL) {
+    const [, base64String] = dataURL.split(';base64,');
+    return Buffer.from(base64String, 'base64');
+}
+
+// Função para adicionar imagens ao PDF
+function addImagesToPDF(images, name) {
+    const caminho = "./public/uploads/" + name;
+    const doc = new jsPDF();
+
+    images.forEach((dataURL, index) => {
+        if (index !== 0) {
+            doc.addPage();
+        }
+
+        const imgData = dataURLToImage(dataURL);
+        doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    });
+
+    doc.save(caminho);
+}
+
+module.exports = { preparaFiles, converterPDF_IMG, addImagesToPDF }
