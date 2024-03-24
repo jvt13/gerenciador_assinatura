@@ -1,5 +1,3 @@
-const dow = require('./comandos2');
-
 async function downloadIMG() {
     try {
         const dataURLs = Object.values(hashMap);

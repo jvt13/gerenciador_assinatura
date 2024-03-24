@@ -17,7 +17,7 @@ const preparaConvert = require('./public/scripts/conversor/main')
 
 const app = express();  //usando para quando não é parte de uma rota
 //const app = express.Router();  //aqui já faz parte de uma rota do servidor 'api-jvt'
-var porta = process.env.PORT || 5000;
+var porta = process.env.PORT || 5005;
 
 /* Definição de limite de dados de upload.*/
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -43,7 +43,7 @@ const pastaRaiz = path.resolve(diretorioAtual);
 app.get('/', async (req, res) => {
 
     //res.sendFile(pastaRaiz + '/pages/home2.html');
-    res.render('home2');
+    res.render('home');
 });
 
 app.get('/download', (req, res) => {

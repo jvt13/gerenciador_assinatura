@@ -8,9 +8,9 @@ var pdfDoc = null;
 var container = null;
 var canvas = null;
 let hashMap = {};
+let hashMapBKP = {};
+
 var page_final = null;
-const { rejects } = require("assert");
-const { resolve } = require("path");
 
 async function loadFile(event) {
     try {
@@ -184,7 +184,7 @@ function refreshCanvas(positionX, positionY) {
             dataURL_canvas = dataURL;
 
             //atribiu nova imagem
-            hashMap[pageNum] = dataURL_canvas;
+            //hashMap[pageNum] = dataURL_canvas;
 
         }, 500);
     };
@@ -201,15 +201,6 @@ function getFile(base64) {
         console.error(error);
 
     }
-}
-
-function limpaCanvas(id) {
-    //var input = event.target;
-    var canvas = document.getElementById(id);
-    var ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 }
 
 /*Fim */
@@ -267,6 +258,7 @@ async function tratarURLPage() {
                     const dataURL = canvas.toDataURL('image/jpeg');
                     //console.log(`DataURL da página ${pageNumber}:`, dataURL);
                     hashMap[pageNumber] = dataURL;
+                    hashMapBKP[pageNumber] = dataURL;
                     //SecondImage(dataURL)
                     //}
                 }
@@ -338,6 +330,24 @@ function obterFormatoDaImagem(dataURL) {
         console.error('Formato da imagem não encontrado no data URL.');
         return null;
     }
+}
+
+/*Fixar assinatura*/
+
+function fixarAssinatura() {
+    hashMap[pageNum] = dataURL_canvas;
+    const rec_data = hashMap[pageNum];
+    var blob = dataURLtoBlob(rec_data);
+    const file = blobToFile(blob, "img_teste.jpg");
+    loadPDF(file);
+}
+
+function removerAssinatura() {
+    hashMap[pageNum] = hashMapBKP[pageNum];
+    const rec_data = hashMap[pageNum];
+    var blob = dataURLtoBlob(rec_data);
+    const file = blobToFile(blob, "img_teste.jpg");
+    loadPDF(file);
 }
 
 /* Trata movimento da assinatura */
@@ -474,5 +484,3 @@ function loadImageFromDataURLASS(dataURL) {
 
 
 }
-
-module.exports = {limpaCanvas}

@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Painel A4 2</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             background-color: #f5f5f5;
+
         }
 
         #container-home {
@@ -22,80 +21,206 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            position: relative;
         }
 
-        #container-file,
-        #container-buttons,
-        #container-body {
-            margin: 10px;
-        }
-
+        #inputPDF,
         #inputImage {
-            display: block;
-            /* Oculta o input de arquivo padrão */
-        }
-
-        #container-buttons {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 400px;
-            /* Define a largura máxima para evitar que os botões fiquem muito espaçados em telas grandes */
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
+            margin-bottom: 10px;
             padding: 10px;
             font-size: 16px;
-            cursor: pointer;
+            width: 100%;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            justify-content: flex-start;
+            /* Alinha os botões no centro */
+            margin-top: 0px;
+            /* Ajuste conforme necessário */
+        }
+
+        .pagination-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 12px;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            /* Espaçamento entre os botões */
+        }
+
+        .trata_position_assinatura {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+
+        .trata_position_assinatura button {
+            background-color: #008cff;
+            color: white;
+            padding: 10px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            /* Espaçamento entre os botões */
+        }
+
+        .buttons-container {
+            /*position: fixed;*/
+            left: 0;
+            top: 10px;
+            /* Ajuste conforme necessário */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 0px;
+            /* Adicionado padding */
+            box-sizing: border-box;
+            /* Garante que o padding não aumente a largura */
+        }
+
+        .buttons-container button {
+            position: relative;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 0px;
+            /* Espaçamento entre os botões */
+        }
+
+        /*#btn_chama_ass,
+        #btn_download {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }*/
+
+        #canvas-container {
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            width: 100%;
+            /* Alterado para porcentagem */
+            height: 0;
+            padding-bottom: 141.42%;
+            /* Proporção A4 (210mm x 297mm) */
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .painel {
+            margin: 0 auto;
+            position: relative;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
             border-radius: 5px;
         }
 
-        /*#id_canvas */
-        #container_A4 {
+        .painel img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*width: 50%;
+            height: 50%;*/
+            cursor: move;
+        }
+
+        #id_canvas22 {
             border: 1px solid #ddd;
-            max-width: 100%;
-            /*height: auto;*/
+            /*margin-top: 20px;*/
             width: 210mm;
-            /* Largura correspondente a um A4 */
+            /* Largura padrão A4 */
             height: 297mm;
-            /* Altura correspondente a um A4 */
+            /* Altura padrão A4 */
+            max-width: 100%;
+            /* Garante que não ultrapasse a largura da tela */
+        }
+
+        @media (max-width: 768px) {
+
+            #inputPDF,
+            #inputImage {
+                font-size: 14px;
+            }
+
+            #btn_chama_ass,
+            #btn_download {
+                font-size: 14px;
+            }
+
         }
     </style>
 </head>
 
 <body>
+
     <%- include('../pages/partials/assinatura.html') %>
         <div id="container-home">
-            <div id="container-file">
-                <input type="file" id="inputImage" onchange="loadImagemTag2(event)" accept="image/*" />
-            </div>
+            <input type="file" id="inputImage" onchange="loadFile(event)" accept=".pdf, image/*" />
 
-            <div id="container-buttons">    
+            <div class="buttons-container">
                 <button id="btn_chama_ass">Assinatura</button>
                 <button id="btn_download">Download</button>
             </div>
-            <div id="container-body">
-                <div id="container_A4">
+
+            <div class="painel" id="painel">
+                <div class="pagination-buttons">
+                    <button id="btn_pag_anterior">Anterior</button>
+                    <label id="lb_page_cur">0</label> de
+                    <label id="lb_page_final">0</label>
+                    <button id="btn_pag_proximo">Próximo</button>
                 </div>
-                
-                <canvas id="id_canvas">
-                    <!--<div id="imageContainer">-->
-                    <!--<img id="secondImage" src="" alt="Second Image">-->
-                    <!--</div>-->
-                </canvas>
+
+                <div class="trata_position_assinatura">
+                    <button id="btn_fixar_ass">Fixar assinatura</button>
+                    <button id="btn_remover_ass">Remover assinatura</button>
+                </div>
+                <div id="canvas-container">
+                    <canvas id="container_canvas">
+                    </canvas>
+                </div>
+            </div>
+            <h2>Pagina 2</h2>
+            <div class="painel" id="painel">
+                <div id="canvas-container">
+                    <canvas id="id_canvas">
+                    </canvas>
+                </div>
             </div>
         </div>
 
-        <script src="../public/scripts/trata_file.js"></script>
+        <!--<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+        <script src="../public/scripts/comandos2.js"></script>
+        <script src="../public/scripts/download.js"></script>
 </body>
 
 <script>
-
     var main = document.getElementById('container-home');
     var btn_assinatura = document.getElementById('btn_chama_ass')
+    var btn_pag_anterior = document.getElementById('btn_pag_anterior')
+    var btn_pag_proximo = document.getElementById('btn_pag_proximo')
+    /*const container = document.getElementById('canvas-container');
+    var canvas = document.getElementById('container_canvas');*/
+    var lb_page_cur = document.getElementById('lb_page_cur');
+    var lb_page_final = document.getElementById('lb_page_final');
+
+    const btn_fixar_ass = document.getElementById('btn_fixar_ass');
+    const btn_remover_ass = document.getElementById('btn_remover_ass');
 
     btn_assinatura.addEventListener('click', function (event) {
         var modal = document.getElementById('modal-ass');
@@ -105,122 +230,36 @@
         document.body.style.overflow = 'hidden';
     });
 
-    function loadImageFromDataURL(dataURL) {
-        //Container para receber a imagem
-        var imgContainer = document.createElement('div');
-        //var imgContainer = document.getElementById('container-body"')
-        imgContainer.style.border = '1px solid black';
-        imgContainer.style.width = '100px';
-        imgContainer.style.height = '100px';
+    btn_download.addEventListener('click', async function () {
+        //juntarIMGCanvas();
+        downloadIMG();
+        //juntarPDF();
+        //downloadImageAsPDF();
+        //downloadFilePDF();
 
-        var img = document.createElement('img');
-        //var img = document.getElementById('secondImage')
+    });
 
-
-        img.src = dataURL;
-        img.style.border = '1px solid black';
-        img.style.width = '20%';
-        img.style.height = '10%';
-
-        //Adcionar img ao Container
-        //imgContainer.appendChild(img);
-
-        var canvas = document.getElementById('imageContainer');
-        canvas.appendChild(img);
-
-        var isMouseDown = false;
-        var startPosition = { x: 0, y: 0 };
-        var endPosition = { x: 0, y: 0 };
-        var lastImagePosition = { x: 0, y: 0 }; // You need to declare this variable
-
-        var pos = getPosition(img);
-        console.log("X = " + pos.x + " Y = " + pos.y + " PO:" + pos.wid);
-
-        img.addEventListener('mousedown', handleMouseDown);
-        img.addEventListener('touchstart', handleTouchStart);
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('touchmove', handleTouchMove);
-
-        img.addEventListener('mouseup', handleMouseUp);
-        img.addEventListener('touchend', handleTouchEnd);
-    }
-
-    function loadSecondImage2(dataURL) {
-        // Converta o Data URL para um Blob
-        let minhaString = (typeof dataURL === 'string') ? dataURL : JSON.stringify(dataURL);
-        let stringSemColchetes = minhaString.replace(/[\[\]]/g, '');
-        dataURL = stringSemColchetes.replace(/"/g, '');
-
-        var blob = dataURLtoBlob(dataURL);
-        const file = blobToFile(blob, "img_teste.jpg");
-        //var input = event.target;
-        var canvas = document.getElementById('id_canvas');
-        var ctx = canvas.getContext('2d');
-
-        var img2 = new Image();
-        img2.onload = function () {
-            ctx.drawImage(img2, 50, 50, 200, 100);
-            img2.style.position = 'absolute';
-            img2.style.zIndex = 1;
-
-            // Add event listeners for moving the image
-            document.addEventListener('mousedown', handleMouseDown);
-            document.addEventListener('touchstart', handleTouchStart);
-
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('touchmove', handleTouchMove(img2));
-
-            document.addEventListener('mouseup', handleMouseUp);
-            img2.addEventListener('touchend', handleTouchEnd);
-        };
-
-        img2.src = URL.createObjectURL(file);
-
-        let img2MouseDown = false;
-        let img2TouchStart = false;
-        let img2OffsetX = 0;
-        let img2OffsetY = 0;
-
-        function handleMouseDown(event) {
-            img2MouseDown = true;
-            img2OffsetX = event.offsetX - this.offsetLeft;
-            img2OffsetY = event.offsetY - this.offsetTop;
+    btn_pag_anterior.addEventListener('click', function () {
+        if (pageNum > 1) {
+            pageNum--;
+            refleshPage();
         }
+    })
 
-        function handleTouchStart(event) {
-            //alert('start')
-            img2TouchStart = true;
-            img2OffsetX = event.touches[0].pageX - this.offsetLeft;
-            img2OffsetY = event.touches[0].pageY - this.offsetTop;
+    btn_pag_proximo.addEventListener('click', function () {
+        if (pageNum > 0 && pageNum <= lb_page_final.textContent) {
+            pageNum++;
+            refleshPage();
         }
+    });
 
-        function handleMouseMove(event) {
+    btn_fixar_ass.addEventListener('click', function () {
+        fixarAssinatura();
+    });
 
-            if (img2MouseDown) {
-                const newX = event.offsetX - img2OffsetX;
-                const newY = event.offsetY - img2OffsetY;
-                img2.style.left = `${newX}px`;
-                img2.style.top = `${newY}px`;
-            }
-        }
-
-        function handleTouchMove(event) {
-            drawImage(event)
-            alert('movimento')
-        }
-
-        function handleMouseUp() {
-            img2MouseDown = false;
-        }
-
-        function handleTouchEnd() {
-            img2TouchStart = false;
-        }
-    }
-
-
-
+    btn_remover_ass.addEventListener('click', function () {
+        removerAssinatura();
+    });
 </script>
 
 </html>
