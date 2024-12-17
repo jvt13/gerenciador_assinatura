@@ -74,7 +74,7 @@ function dataURLToImage(dataURL) {
 }
 
 // Função para adicionar imagens ao PDF
-function addImagesToPDF(images, name) {
+async function addImagesToPDF(images, name, condicao) {
     const caminho = "./public/uploads/" + name;
     const doc = new jsPDF();
 
@@ -87,7 +87,15 @@ function addImagesToPDF(images, name) {
         doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
     });
 
-    doc.save(caminho);
+    if (condicao === "save") {
+        doc.save(caminho);
+    }
+
+    if (condicao === "data") {
+        // Retorna o PDF como dataURL base64
+        return doc.output('datauristring');
+    }
+
 }
 
 module.exports = { preparaFiles, converterPDF_IMG, addImagesToPDF }

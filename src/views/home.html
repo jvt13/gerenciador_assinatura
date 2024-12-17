@@ -1,0 +1,196 @@
+<%- include('partials/header.html') %>
+    <%- include('../views/partials/modal/modal_loading.html') %>
+
+        <div class="container-main">
+            <div class="container-menu">
+                <button style="background-color: #555;" id="btn_menu_recebidos">Recebidos</button>
+                <button id="btn_menu_assinar">Assinar</button>
+                <button id="btn_menu_assinados">Documentos assinados</button>
+            </div>
+
+            <div id="body-menu-recebidos" class="menu-recebidos" style="display: block;">
+                <label>Documentos recebidos</label>
+            </div>
+
+            <div id="body-menu-assinar" class="menu-assinar" style="display: none;">
+                <label>Documentos assinar</label>
+            </div>
+
+            <div id="body-menu-docs-assinados" class="menu-docs-assinados" style="display: none;">
+                <!--<label>Documentos assinados</label>-->
+
+                <table border="1" cellpadding='0' cellspacing='0' id="list_doc_assi" class="list_doc_assi">
+                    <thead>
+                        <tr>
+                            <th colspan="3">DADOS DOS ARQUIVOS</th>
+                            <th colspan="4">AÇÕES</th>
+                        </tr>
+                        <tr>
+                            <td>NOME</td>
+                            <td>TAMANHO</td>
+                            <td>DATA</td>
+                            <td>VER</td>
+                            <td>DOWNLOAD</td>
+                            <td>ENVIAR</td>
+                            <td>EXCLUIR</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%for(let i=0; i < size; i++){%>
+                            <tr class="dados">
+                                <td>
+                                    <%= list[i].nome_arquivo %>
+                                </td>
+                                <td>
+                                    <%= list[i].tamanho %>
+                                </td>
+                                <td>
+                                    <%= list[i].data_envio %>
+                                </td>
+                                <td><button id="btn_view" onclick="trataButtonsAcoes('btn_view')"><img
+                                            style="width: 20px; height: 20px;"
+                                            src="../../public/image/view.png" /></button>
+                                </td>
+                                <td><button id="btn_view" onclick="trataButtonsAcoes('btn_down')"><img
+                                            style="width: 20px; height: 20px;"
+                                            src="../../public/image/download_icon.png" /></button>
+                                </td>
+                                <td><button id="btn_send" onclick="trataButtonsAcoes('btn_send')"><img
+                                            style="width: 20px; height: 20px;"
+                                            src="../../public/image/send_document.png" /></button>
+                                </td>
+                                <td><button id=" btn_delet" onclick="trataButtonsAcoes('btn_delet')"><img
+                                            style="width: 20px; height: 20px;"
+                                            src="../../public/image/delete.png" /></button></td>
+                            </tr>
+
+                            <%}%>
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+        <%- include('partials/footer.html') %>
+            <!--</body>-->
+
+            <script>
+                var loading = document.getElementById('modal-loading');
+                loading.style.display = 'none';
+
+                const btn_menu_recebidos = document.getElementById("btn_menu_recebidos");
+                const btn_menu_assinar = document.getElementById("btn_menu_assinar");
+                const btn_menu_assinados = document.getElementById("btn_menu_assinados");
+
+                const body_recebidos = document.getElementById('body-menu-recebidos');
+                const body_assinar = document.getElementById('body-menu-assinar');
+                const body_assinados = document.getElementById('body-menu-docs-assinados');
+
+                body_recebidos.style.display = 'block';
+                body_assinar.style.display = 'none';
+                body_assinados.style.display = 'none';
+
+                btn_menu_recebidos.addEventListener('click', function (event) {
+                    btn_menu_recebidos.style.backgroundColor = '#555';
+                    btn_menu_assinar.style.backgroundColor = 'transparent';
+                    btn_menu_assinados.style.backgroundColor = 'transparent';
+
+                    body_recebidos.style.display = 'block';
+                    body_assinar.style.display = 'none';
+                    body_assinados.style.display = 'none';
+                });
+
+                btn_menu_assinar.addEventListener('click', function (event) {
+                    btn_menu_recebidos.style.backgroundColor = 'transparent';
+                    btn_menu_assinar.style.backgroundColor = '#555';
+                    btn_menu_assinados.style.backgroundColor = 'transparent';
+
+                    body_recebidos.style.display = 'none';
+                    body_assinar.style.display = 'block';
+                    body_assinados.style.display = 'none';
+
+                    window.location.href = '/trata_documento';
+                });
+
+                btn_menu_assinados.addEventListener('click', function (event) {
+                    btn_menu_recebidos.style.backgroundColor = 'transparent';
+                    btn_menu_assinar.style.backgroundColor = 'transparent';
+                    btn_menu_assinados.style.backgroundColor = '#555';
+
+                    body_recebidos.style.display = 'none';
+                    body_assinar.style.display = 'none';
+                    body_assinados.style.display = 'block';
+                });
+
+                /*Controle button da lista de docs assinados*/
+                const btn_view = document.getElementById('btn_view');
+                const btn_send = document.getElementById('btn_send');
+                const btn_delet = document.getElementById('btn_delet');
+                const modal_view = document.getElementById('');
+
+                function trataButtonsAcoes(event) {
+                    if (event === 'btn_view') {
+                        openModal();
+                    }
+                    if (event === 'btn_down'){
+                        alert('Downaload...')
+                    }
+                    if (event === 'btn_send') {
+                        alert('Send')
+                    }
+                    if (event === 'btn_delet') {
+                        alert('Delet')
+                    }
+                }
+
+                function openModal() {
+                    const modal = document.getElementById('modal-view-doc');
+                    var home = document.getElementById('container-main');
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                    body_assinados.style.display = 'none';
+
+                }
+
+
+                /*Detectar ação de tecla*/
+                window.addEventListener("keydown", function (event) {
+                    // Detecta se a tecla F5 foi pressionada
+                    if (event.key === "F5" || (event.keyCode === 116)) {
+                        loading.style.display = 'flex';
+                        //alert("Tecla F5 pressionada - tentativa de recarregar a página.");
+                        //event.preventDefault(); // Evita o comportamento padrão de recarregar a página
+                    }
+                    // Detecta combinação Ctrl+R em navegadores Windows/Linux
+                    else if ((event.ctrlKey && event.key === 'r') || (event.ctrlKey && event.keyCode === 82)) {
+                        loading.style.display = 'flex';
+                        //alert("Combinação Ctrl+R pressionada - tentativa de recarregar a página.");
+                        //event.preventDefault(); // Evita o comportamento padrão de recarregar a página
+                    }
+                    // Detecta combinação Command+R em navegadores Mac
+                    else if ((event.metaKey && event.key === 'r') || (event.metaKey && event.keyCode === 82)) {
+                        loading.style.display = 'flex';
+                        //alert("Combinação Command+R pressionada - tentativa de recarregar a página.");
+                        //event.preventDefault(); // Evita o comportamento padrão de recarregar a página
+                    }
+                });
+
+                document.addEventListener('visibilitychange', function () {
+                    if (document.visibilityState === 'visible') {
+                        console.log('A página foi recarregada ou o usuário voltou para ela.');
+                        //loading.style.display = 'flex';
+                    }
+                });
+
+
+                // Evento antes de descarregar a página
+                /*window.addEventListener("beforeunload", function (event) {
+                    var confirmationMessage = "Tem certeza que deseja sair?";
+                    event.returnValue = confirmationMessage; // Padrão para alguns navegadores
+                    return confirmationMessage; // Padrão para outros navegadores
+                });*/
+
+            </script>
+
+            </html>

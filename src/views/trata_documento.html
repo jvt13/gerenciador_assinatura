@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+
+        }
+
+        #container-home {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        #inputFile {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            justify-content: flex-start;
+            /* Alinha os botões no centro */
+            margin-top: 0px;
+            /* Ajuste conforme necessário */
+        }
+
+        .painel {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            margin-top: 10px;
+            padding: 0px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .painel #canvas-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            /*width: 50%;
+            height: 50%;*/
+            cursor: move;
+        }
+
+        .painel .buttons-controle img {
+            position: absolute;
+            top: 50%;
+            /* Centraliza verticalmente */
+            transform: translateY(-50%);
+            /* Ajuste fino da centralização vertical */
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        #btn_pag_anterior {
+            left: 0;
+        }
+
+        #btn_pag_proximo {
+            right: 0;
+        }
+
+        /*Linha onde contem as paginas e butons (fixar assinatura / Remover assinatura)*/
+        /* Ajusta o layout da div container-pagination-assinatura */
+        .container-pagination-assinatura {
+            display: flex;
+            /* Define um layout flexível */
+            justify-content: space-between;
+            /* Espaça os elementos para ocupar o contêiner uniformemente */
+            align-items: center;
+            /* Centraliza verticalmente os itens */
+            padding: 10px;
+            /* Adiciona padding para criar espaço interno */
+            border-top: 1px solid #ddd;
+            /* Adiciona uma linha de divisão sutil na parte superior */
+            margin-top: 20px;
+            /* Adiciona espaço acima da div */
+        }
+
+        /* Ajusta o estilo dos botões na div pagination-buttons */
+        .pagination-buttons {
+            display: flex;
+            /* Define um layout flexível */
+            gap: 10px;
+            /* Adiciona um espaço entre os botões */
+            align-items: center;
+            /* Centraliza verticalmente os itens */
+        }
+
+        /* Ajusta o estilo dos botões em trata_position_assinatura */
+        .trata_position_assinatura {
+            display: flex;
+            /* Define um layout flexível */
+            gap: 10px;
+            /* Adiciona um espaço entre os botões */
+            align-items: center;
+            /* Centraliza verticalmente os itens */
+            /*opacity: 0.5;
+            pointer-events: none;
+            color: green;*/
+        }
+
+        .trata_position_assinatura button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Define estilos padrão para botões dentro das divs */
+        .container-pagination-assinatura button {
+            padding: 10px 15px;
+            /* Adiciona padding para dar um tamanho e margem ao botão */
+            border-radius: 5px;
+            /* Adiciona bordas arredondadas */
+            border: none;
+            /* Remove a borda padrão */
+            cursor: pointer;
+            /* Muda o cursor ao passar sobre o botão */
+        }
+
+
+        .buttons-container {
+            /*position: fixed;*/
+            left: 0;
+            top: 10px;
+            /* Ajuste conforme necessário */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 0px;
+            /* Adicionado padding */
+            box-sizing: border-box;
+            /* Garante que o padding não aumente a largura */
+        }
+
+        .buttons-container button {
+            position: relative;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 10px;
+            font-size: 16px;
+            min-width: 100px;
+            max-width: 180px;
+            border: none;
+            border-radius: 5px;
+            margin: 0 0px;
+            /* Espaçamento entre os botões */
+        }
+
+        /*#btn_chama_ass,
+        #btn_download {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }*/
+
+        #canvas-container {
+            border: 1px solid #ddd;
+            margin-top: 0px;
+            width: 100%;
+            /* Alterado para porcentagem */
+            height: 0;
+            padding-bottom: 141.42%;
+            /* Proporção A4 (210mm x 297mm) */
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #id_canvas22 {
+            border: 1px solid #ddd;
+            /*margin-top: 20px;*/
+            width: 210mm;
+            /* Largura padrão A4 */
+            height: 297mm;
+            /* Altura padrão A4 */
+            max-width: 100%;
+            /* Garante que não ultrapasse a largura da tela */
+        }
+
+        @media (max-width: 768px) {
+
+            #inputPDF,
+            #inputFile {
+                font-size: 14px;
+            }
+
+            #btn_chama_ass,
+            #btn_download {
+                font-size: 14px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('../views/partials/assinatura.html') %>
+        <div id="container-home">
+            <input type="file" id="inputFile" />
+
+
+            <div class="buttons-container">
+                <button id="btn_chama_ass">ASSINAR</button>
+                <button id="btn_salvar">SALVAR</button>
+                <button id="btn_download">DOWNLOAD</button>
+            </div>
+
+            <!--<div class="container-novo-nome-arquivo"
+                style="display: flex; justify-content: flex-start; text-align: center; margin-top: 20px; width: 100%;">
+                <label style="width: 30%;">Nome final para o arquivo:&nbsp;</label>
+                <input type="text" style="width: 70%;" />
+            </div>-->
+
+            <div class="container-pagination-assinatura">
+                <div class="pagination-buttons">
+                    <!--<button id="btn_pag_anterior">Anterior</button>-->
+                    <label id="lb_page_cur">0</label> de
+                    <label id="lb_page_final">0</label>
+                    <!--<button id="btn_pag_proximo">Próximo</button>-->
+                </div>
+
+                <div id="trata_position_assinatura" class="trata_position_assinatura">
+                    <button id="btn_fixar_ass">Fixar assinatura</button>
+                    <button id="btn_remover_ass">Remover assinatura</button>
+                </div>
+
+            </div>
+
+            <div class="painel" id="painel">
+                <img id="btn_pag_anterior" src="../../public/image/arrow_previous.png" style="width: 32px;">
+                <!--<button id="btn_pag_anterior"><<</button>-->
+                <div id="canvas-container">
+                    <canvas id="container_canvas">
+                    </canvas>
+                </div>
+                <img id="btn_pag_proximo" src="../../public/image/arrow_next.png" style="width: 32px;">
+                <!--<button id="btn_pag_proximo">>></button>-->
+            </div>
+            <!--<h2>Pagina 2</h2>-->
+            <div class="painel" id="painel" style="display: none;">
+                <div id="canvas-container">
+                    <canvas id="id_canvas">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+
+        <!--<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+        <script src="../../public/scripts/assinatura_doc/comandos.js"></script>
+        <script src="../../public/scripts/assinatura_doc/download.js"></script>
+</body>
+
+<script>
+    var main = document.getElementById('container-home');
+    var btn_assinatura = document.getElementById('btn_chama_ass')
+    var btn_pag_anterior = document.getElementById('btn_pag_anterior')
+    var btn_pag_proximo = document.getElementById('btn_pag_proximo')
+    /*const container = document.getElementById('canvas-container');
+    var canvas = document.getElementById('container_canvas');*/
+    var lb_page_cur = document.getElementById('lb_page_cur');
+    var lb_page_final = document.getElementById('lb_page_final');
+
+    const btn_fixar_ass = document.getElementById('btn_fixar_ass');
+    const btn_remover_ass = document.getElementById('btn_remover_ass');
+
+    const inputFile = document.getElementById('inputFile');
+    const div_fixa = document.getElementById('trata_position_assinatura');
+
+    inputFile.addEventListener('change', function (event) {
+        loadFile(event);
+    })
+
+    btn_assinatura.addEventListener('click', function (event) {
+        if (inputFile.files.length === 0) {
+            alert('Tem que selecionar algum arquivo para poder assinar.');
+            return;
+        }
+
+        var modal = document.getElementById('modal-ass');
+
+        main.style.display = 'none';
+        modal.style.display = 'block'
+        document.body.style.overflow = 'hidden';
+    });
+
+    btn_download.addEventListener('click', async function () {
+        if (inputFile.files.length === 0) {
+            alert('Tem que selecionar algum arquivo para poder fazer o download.');
+            return;
+        }
+
+        downloadIMG();
+
+    });
+
+    btn_pag_anterior.addEventListener('click', function () {
+        if (pageNum > 1) {
+            pageNum--;
+            refleshPage();
+        }
+    })
+
+    btn_pag_proximo.addEventListener('click', function () {
+        if (pageNum > 0 && pageNum <= lb_page_final.textContent) {
+            pageNum++;
+            refleshPage();
+        }
+    });
+
+    btn_fixar_ass.addEventListener('click', function () {
+        if (inputFile.files.length === 0) {
+            alert('Tem que selecionar algum arquivo para poder assinar.');
+            return;
+        }
+        fixarAssinatura();
+    });
+
+    btn_remover_ass.addEventListener('click', function () {
+        if (inputFile.files.length === 0) {
+            alert('Tem que selecionar algum arquivo para poder assinar.');
+            return;
+        }
+        removerAssinatura();
+    });
+
+    const btn_salvar = document.getElementById('btn_salvar');
+
+    btn_salvar.addEventListener('click', async function () {
+        try {
+            const dataURLs = Object.values(hashMap);
+            /*const arrayStrings = [];
+
+            for (let i = 1; i < cont.length; i++) {
+                //dataURLs = dataURLs + hashMap[i]+":";
+                arrayStrings.push(hashMap[i]);
+            }*/
+
+            const response = await fetch('/save-doc', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dados: dataURLs })
+            });
+
+            // Verifica se a resposta do servidor indica um erro
+            if (!response.ok) {
+                throw new Error('Falha na requisição: ' + response.statusText);
+            }
+
+            const { success, message, error } = await response.json();
+
+            alert(message);
+
+            if (success) {
+                window.location.href = '../';
+            } else (
+                window.location.href = '../'
+            )
+        } catch (error) {
+            console.log(error);
+        }
+    });
+</script>
+
+</html>

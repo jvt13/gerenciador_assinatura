@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+
+header {
+  padding: 8px 0;
+  background-color: #0aacdc;
+  text-align: center;
+  padding: 10px 0;
+  /* Espaçamento interno superior e inferior */
+  position: fixed;
+  /* Fixa o header no topo da página */
+  top: 0;
+  /* Posição no topo */
+  left: 0;
+  /* Alinha à esquerda da página */
+  width: 100%;
+  /* Largura total */
+  z-index: 1000;
+  /* Garante que o header fique sobre outros conteúdos */
+}
+
+.center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 6%;
+  display: flex;
+  flex-wrap: wrap;
+  /*um dos passos para deixar responsivo*/
+}
+
+.logo {
+  text-align: left;
+  width: 50%;
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+}
+
+.container-users {
+  position: relative;
+  right: 0px;
+}
+
+footer {
+  background-color: #0aacdc;
+  text-align: center;
+  color: white;
+  position: fixed;
+  padding: 8px 0;
+  /* Posição inferior */
+  bottom: 0;
+  /* Largura total */
+  width: 100%;
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 1;
+  /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: white;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: white;
+}

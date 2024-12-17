@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sua Página</title>
+    <style>
+        /* Estilos gerais da página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        /* Estilos do modal */
+        .modal-view-doc {
+            display: none; /* Por padrão, o modal é escondido */
+            position: fixed; /* Modal é posicionado fixamente */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+            z-index: 999; /* Certifica-se de que o modal esteja acima de outros elementos */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 20% auto; /* Centraliza o modal verticalmente */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px; /* Limita a largura máxima do modal */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Sombra suave */
+        }
+
+        .modal-header, .modal-footer {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Estilos específicos para o canvas */
+        canvas {
+            /* Definindo o tamanho do canvas como A4 (210mm x 297mm) */
+            width: 210mm;
+            height: 297mm;
+            /* Definindo o tamanho do canvas em pixels */
+            width: 793px; /* 210mm converted to pixels (96 dpi) */
+            height: 1122px; /* 297mm converted to pixels (96 dpi) */
+            /* Outros estilos opcionais */
+            border: 1px solid black; /* Adicionando uma borda para visualização */
+        }
+
+        /* Estilos para o botão SAIR */
+        #btn_sair {
+            background-color: #ccc;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #btn_sair:hover {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="modal-view-doc" class="modal-view-doc">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 id="titulo-modal-view-doc">Documento</h1>
+            </div>
+            <br>
+    
+            <div class="modal-body">
+                <div class="container">
+                    <canvas id="canvas"></canvas>
+                    <button id="btn_sair" onclick="closeModal()">SAIR</button>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+
+    <!-- Seu conteúdo da página vai aqui -->
+    <h1>Sua Página</h1>
+    <p>Conteúdo da sua página vai aqui.</p>
+    <!-- Botão para abrir o modal -->
+    <button onclick="openModal()">Abrir Modal</button>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal-view-doc').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal-view-doc').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

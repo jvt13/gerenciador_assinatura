@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Estilos -->
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .container-cadastro-users,
+        .container-login {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            /* Inicialmente escondido */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            width: 400px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            /* Fundo branco para a caixa de login/cadastro */
+            box-sizing: border-box;
+            /* Garante que o padding não adicione largura ao elemento */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: calc(100% - 20px);
+            /* Ajusta a largura dos inputs e botões para considerar o padding */
+            padding: 10px;
+            margin-bottom: 10px;
+            margin-left: auto;
+            /* Centraliza o input horizontalmente */
+            margin-right: auto;
+            /* Centraliza o input horizontalmente */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+            /* Garante que o input ocupe sua própria linha */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #0073b7;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .login-options {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /*a,*/
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #0073b7;
+            color: #fff;
+            border: 1px solid #0073b7;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /*a:hover,*/
+        button:hover {
+            /*text-decoration: underline;*/
+            /* Adiciona um sublinhado ao passar o mouse para indicar clicabilidade */
+            background-color: green;
+        }
+
+        .login-options {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #0073b7;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        /* Mostra o container de login inicialmente */
+        #container_login {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('../views/partials/modal/modal_loading.html') %>
+
+        <!-- Cadastro -->
+        <div id="container_cadastro" class="container-cadastro-users" style="display: none;">
+            <div class="login-box">
+                <h1>Cadastro</h1>
+                <form id="form_cadastro" method="post">
+                    <input type="text" name="nome" placeholder="Nome completo" required>
+                    <input type="text" name="username" placeholder="Usuário" required>
+                    <input type="email" name="email" placeholder="E-mail" required>
+                    <input type="password" name="password" placeholder="Senha" required>
+                    <input type="password" name="password2" placeholder="Confirme a senha" required>
+                    <button type="submit">Criar conta</button>
+                </form>
+                <div class="login-options">
+                    <button id="btn_voltar_login">Já possui conta?</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login -->
+        <div id="container_login" class="container-login">
+            <div class="login-box">
+                <h1>Login</h1>
+                <form id="form_login" method="post">
+                    <input type="text" name="username" placeholder="Usuário" required>
+                    <input type="password" name="password" placeholder="Senha" required>
+                    <button type="submit">Entrar</button>
+                </form>
+                <div class="login-options">
+                    <button id="btn_novo_usuario">Novo Usuário</button>
+                    <a href="/google-login">Login com Google</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+
+            var loading = document.getElementById('modal-loading');
+            loading.style.display = 'none';
+
+            var rota = null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const btnNovoUsuario = document.getElementById('btn_novo_usuario');
+                const btnVoltarLogin = document.getElementById('btn_voltar_login');
+                const containerLogin = document.getElementById('container_login');
+                const containerCadastro = document.getElementById('container_cadastro');
+
+                // Mostrar cadastro e esconder login
+                btnNovoUsuario.addEventListener('click', function () {
+                    containerLogin.style.display = 'none';
+                    containerCadastro.style.display = 'flex'; // Ajustar conforme necessário
+                });
+
+                // Voltar para login
+                btnVoltarLogin.addEventListener('click', function () {
+                    containerCadastro.style.display = 'none';
+                    containerLogin.style.display = 'flex'; // Ajustar conforme necessário
+                });
+            });
+
+            //const form = document.querySelector('form');
+            const form_login = document.getElementById('form_login');
+            const form_cadastro = document.getElementById('form_cadastro');
+
+            form_login.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                rota = "login";
+                requisicaoPost(form_login);
+            });
+
+            form_cadastro.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                rota = "insert-user";
+                requisicaoPost(form_cadastro);
+            });
+
+            function validaPass(pass1, pass2) {
+                if (pass2 === pass1) {
+                    return true;
+                }
+                alert('Senha de confirmação não confere! Repita a operação.')
+                return false;
+            }
+
+            async function requisicaoPost(form) {
+                try {
+                    const formData = new FormData(form);
+
+                    const nome = formData.get('nome') || null; // Para cadastro
+                    const username = formData.get('username') || null; // Para login
+                    const password = formData.get('password') || null;
+                    const password2 = formData.get('password2') || null; // Para cadastro
+                    const email = formData.get('email') || null;
+
+                    // Validação de senha no cadastro
+                    if (form === form_cadastro && password !== password2) {
+                        alert('Senha de confirmação não confere! Repita a operação.');
+                        return;
+                    }
+
+                    //alert(`Rota: ${rota} -- Username: ${username}`);
+
+                    // Enviar a requisição
+                    const response = await fetch(`/${rota}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, username, password, email }),
+                    });
+
+                    // Verifica se a resposta do servidor indica um erro
+                    if (!response.ok) {
+                        throw new Error(`Falha na requisição: ${response.statusText}`);
+                    }
+
+                    const { success, message, error } = await response.json();
+
+                    if (success) {
+                        //alert('Operação realizada com sucesso!');
+                        loading.style.display = 'flex';
+                        window.location.href = './';
+                    } else {
+                        console.error(error);
+                        alert(message);
+                        form_login.username.value = '';
+                        form_login.password.value = '';
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar requisição:', error.message);
+                    alert('Falha ao fazer login: ' + error.message);
+                }
+            }
+
+
+        </script>>
+</body>
+
+</html>
